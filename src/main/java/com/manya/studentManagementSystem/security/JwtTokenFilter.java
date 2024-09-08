@@ -41,7 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 	public JwtTokenFilter(Environment environment, StudentService studentService) {
 		super();
 		this.environment = environment;
-		this.studentService=studentService;
+		this.studentService = studentService;
 	}
 
 	@Override
@@ -54,17 +54,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 		if (authorization != null && authorization.startsWith("Bearer ")) {
 			jwt = authorization.substring(7);
-		}
 
-		if (isValid(jwt) && subject != null) {
-			UserDetails user = studentService.loadUserByUsername(subject);
+			if (isValid(jwt) && subject != null) {
+				UserDetails user = studentService.loadUserByUsername(subject);
 
-			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
-					null, user.getAuthorities());
-			authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user,
+						null, user.getAuthorities());
+				authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
+			}
 		}
 		filterChain.doFilter(request, response);
 

@@ -22,7 +22,7 @@ public class WebSecurity {
 	private Environment environment;
 	private StudentService studentService;
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+	
 	public WebSecurity(Environment environment, StudentService studentService,
 			BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.environment = environment;
@@ -50,6 +50,13 @@ public class WebSecurity {
 
 		http.authorizeHttpRequests((authz) -> authz.requestMatchers(new AntPathRequestMatcher("/students", "POST"))
 				.permitAll().requestMatchers(new AntPathRequestMatcher("/students/status/check")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/students/status/check")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/swagger-ui/")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/swagger-ui/*")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/v2/api-docs/**")).permitAll()
+				.requestMatchers(new AntPathRequestMatcher("/swagger-resources/**")).permitAll()
 				.anyRequest().authenticated()).addFilter(authenticationFilter).addFilter(authenticationFilter)
 				.authenticationManager(authenticationManager)
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
