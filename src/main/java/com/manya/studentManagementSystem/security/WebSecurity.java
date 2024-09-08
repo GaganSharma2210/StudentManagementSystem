@@ -1,5 +1,7 @@
 package com.manya.studentManagementSystem.security;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -12,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.manya.studentManagementSystem.service.StudentService;
 
@@ -29,6 +34,18 @@ public class WebSecurity {
 		this.studentService = studentService;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
+	
+	@Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(CorsConfiguration.ALL));
+        configuration.setAllowedMethods(Arrays.asList(CorsConfiguration.ALL));
+        configuration.setAllowedHeaders(Arrays.asList(CorsConfiguration.ALL));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
 	@Bean
 	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -48,7 +65,8 @@ public class WebSecurity {
 
 		http.csrf((csrf) -> csrf.disable());
 
-		http.authorizeHttpRequests((authz) -> authz.requestMatchers(new AntPathRequestMatcher("/students", "POST"))
+		http.cors(c -> c.configurationSource(corsConfigurationSource()))
+		.authorizeHttpRequests((authz) -> authz.requestMatchers(new AntPathRequestMatcher("/students", "POST"))
 				.permitAll().requestMatchers(new AntPathRequestMatcher("/students/status/check")).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/students/status/check")).permitAll()
 				.requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
