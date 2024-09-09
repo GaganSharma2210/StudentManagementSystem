@@ -26,8 +26,8 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	private StudentRepository studentRepository;
 
-	//@Autowired
-	//private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -38,8 +38,8 @@ public class StudentServiceImpl implements StudentService {
 	public StudentResponseModel saveStudent(StudentRequestModel studentRequestModel) {
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		StudentEntity studentEntity = modelMapper.map(studentRequestModel, StudentEntity.class);
-		//studentEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(studentRequestModel.getPassword()));
-		studentEntity.setEncryptedPassword(studentRequestModel.getPassword());
+		studentEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(studentRequestModel.getPassword()));
+		//studentEntity.setEncryptedPassword(studentRequestModel.getPassword());
 		studentRepository.save(studentEntity);
 		StudentResponseModel studentResponseModel = modelMapper.map(studentEntity, StudentResponseModel.class);
 		return studentResponseModel;
@@ -64,8 +64,8 @@ public class StudentServiceImpl implements StudentService {
 		studentEntity.setName(studentRequestModel.getName());
 		studentEntity.setPincode(studentRequestModel.getPincode());
 		studentEntity.setContactNumber(studentRequestModel.getContactNumber());
-		//studentEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(studentRequestModel.getPassword()));
-		studentEntity.setEncryptedPassword(studentRequestModel.getPassword());
+		studentEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(studentRequestModel.getPassword()));
+		//studentEntity.setEncryptedPassword(studentRequestModel.getPassword());
 		studentRepository.save(studentEntity);
 		StudentResponseModel studentResponseModel = modelMapper.map(studentEntity, StudentResponseModel.class);
 		return studentResponseModel;
