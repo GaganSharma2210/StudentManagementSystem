@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.json.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -72,7 +73,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 				.issuedAt(Date.from(now)).signWith(secretKey, SignatureAlgorithm.HS512).compact();
 
 		res.addHeader("token", token);
-
+		JSONObject jobj = new JSONObject();
+		jobj.put("jwt", token);
+		try {
+			res.getWriter().write(jobj.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
